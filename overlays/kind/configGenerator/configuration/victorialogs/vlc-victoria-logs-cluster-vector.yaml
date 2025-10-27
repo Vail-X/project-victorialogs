@@ -30,6 +30,7 @@ sinks:
         VL-Stream-Fields: stream,kubernetes.pod_name,kubernetes.container_name,kubernetes.pod_namespace
         VL-Time-Field: timestamp
     type: http
+    strategy: sync
 sources:
   internal_metrics:
     type: internal_metrics
