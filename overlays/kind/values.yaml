@@ -217,7 +217,7 @@ vlselect:
     # -- Service labels
     labels: {}
     # -- Service ClusterIP
-    clusterIP: None
+    clusterIP: ''
     # -- Service external IPs. Details are [here](https://kubernetes.io/docs/concepts/services-networking/service/#external-ips)
     externalIPs: []
     # -- Extra service ports
@@ -470,7 +470,7 @@ vlinsert:
     # -- Service labels
     labels: {}
     # -- Service ClusterIP
-    clusterIP: None
+    clusterIP: ''
     # -- Service external IPs. Details are [here]( https://kubernetes.io/docs/concepts/services-networking/service/#external-ips)
     externalIPs: []
     # -- Extra service ports
@@ -789,7 +789,7 @@ vlstorage:
 vmauth:
   # -- Enable deployment of vmauth component, to help better balance the read and write requests to vlinsert and vlselect components.
   # With vmauth enabled, please also set `service.clusterIP: None` and `service.type: ClusterIP` for `vlinsert` and `vlselect`.
-  enabled: true
+  enabled: false
   # -- Override default `app` label name
   name: ''
   # -- VMAuth configuration secret name
