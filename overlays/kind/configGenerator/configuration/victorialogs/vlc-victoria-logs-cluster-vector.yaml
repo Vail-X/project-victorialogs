@@ -13,7 +13,7 @@ sinks:
     api_version: v8
     compression: gzip
     endpoints:
-    - http://vl-victoria-logs-cluster-vmauth.vm.svc.cluster.local:8427/insert/
+    - http://vlc-victoria-logs-cluster-vmauth.vm.svc.cluster.local:8427/insert/
     auth:
       user: ${VM_AUTH_USER}
       password: ${VM_AUTH_PASSWORD}
