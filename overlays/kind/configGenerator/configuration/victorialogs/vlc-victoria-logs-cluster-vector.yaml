@@ -6,31 +6,27 @@ data_dir: /vector-data-dir
 sinks:
   exporter:
     address: 0.0.0.0:9090
-    inputs:
-    - internal_metrics
+    inputs: ['internal_metrics']
     type: prometheus_exporter
   vlogs:
-    api_version: v8
     compression: gzip
-    endpoints:
-    - http://vlc-victoria-logs-cluster-vlinsert.vm.svc.cluster.local:9481/insert/jsonline
-    auth:
-      user: ${VM_AUTH_USER}
-      password: ${VM_AUTH_PASSWORD}
+    uri: 'http://vlc-victoria-logs-cluster-vlinsert.vm.svc.cluster.local:9481/insert/jsonline'
     healthcheck:
       enabled: false
-    inputs:
-    - parser
-    mode: bulk
+    inputs: ['parser']
+    type: http
+    method: post
+    encoding:
+      codec: json
+    framing:
+      method: newline_delimited
     request:
       headers:
-        AccountID: "0"
-        ProjectID: "0"
-        VL-Msg-Field: message,msg,_msg,log.msg,log.message,log
-        VL-Stream-Fields: stream,kubernetes.pod_name,kubernetes.container_name,kubernetes.pod_namespace
         VL-Time-Field: timestamp
-    type: http
-    strategy: sync
+        VL-Stream-Fields: stream,kubernetes.pod_name,kubernetes.container_name,kubernetes.pod_namespace
+        VL-Msg-Field: log,log.msg
+        AccountID: '0'
+        ProjectID: '0'
 sources:
   internal_metrics:
     type: internal_metrics
@@ -39,7 +35,7 @@ sources:
 transforms:
   parser:
     inputs:
-    - k8s
+      - k8s
     source: |
       .log = parse_json(.message) ?? .message
       del(.message)
