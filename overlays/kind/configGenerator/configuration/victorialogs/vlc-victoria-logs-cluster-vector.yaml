@@ -30,6 +30,7 @@ sinks:
         VL-Msg-Field: log,log.msg
         AccountID: '0'
         ProjectID: '0'
+    strategy: sync
 sources:
   internal_metrics:
     type: internal_metrics
