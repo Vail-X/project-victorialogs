@@ -39,4 +39,5 @@ transforms:
     source: |
       .log = parse_json(.message) ?? .message
       del(.message)
+      .vector_source = "vector_agent"
     type: remap
