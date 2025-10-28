@@ -1,0 +1,43 @@
+api:
+  address: 0.0.0.0:8686
+  enabled: false
+  playground: true
+data_dir: /vector-data-dir
+sinks:
+  exporter:
+    address: 0.0.0.0:9090
+    inputs: ['internal_metrics']
+    type: prometheus_exporter
+  vlogs:
+    compression: gzip
+    uri: 'http://vlc-victoria-logs-cluster-vlinsert.vm.svc.cluster.local:9481/insert/jsonline'
+    healthcheck:
+      enabled: false
+    inputs: ['parser']
+    type: http
+    method: post
+    encoding:
+      codec: json
+    framing:
+      method: newline_delimited
+    request:
+      headers:
+        VL-Time-Field: timestamp
+        VL-Stream-Fields: stream,kubernetes.pod_name,kubernetes.container_name,kubernetes.pod_namespace
+        VL-Msg-Field: log,log.msg
+        AccountID: '0'
+        ProjectID: '0'
+sources:
+  internal_metrics:
+    type: internal_metrics
+  k8s:
+    type: kubernetes_logs
+transforms:
+  parser:
+    inputs:
+      - k8s
+    source: |
+      .log = parse_json(.message) ?? .message
+      del(.message)
+      .vector_source = "vector_agent"
+    type: remap
