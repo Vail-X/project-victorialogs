@@ -829,7 +829,6 @@ vmauth:
     loggerFormat: json
     httpListenAddr: :8427
     http.shutdownDelay: 15s
-    auth.config: /config/auth.yml
   # -- VMAuth annotations
   annotations: {}
   # -- VMAuth additional labels
@@ -1050,6 +1049,17 @@ vector:
     enabled: false
   existingConfigMaps:
     - vector-vl-config
+  # env:
+  #   - name: VM_AUTH_USER
+  #     valueFrom:
+  #       secretKeyRef:
+  #         name: vmauth-vector-secret
+  #         key: username
+  #   - name: VM_AUTH_PASSWORD
+  #     valueFrom:
+  #       secretKeyRef:
+  #         name: vmauth-vector-secret
+  #         key: password
   # -- Forces custom configuration creation in a given namespace even if vector.enabled is false
   customConfigNamespace: ''
   customConfigName: vector-vl-config-dummy
