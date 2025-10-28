@@ -829,6 +829,7 @@ vmauth:
     loggerFormat: json
     httpListenAddr: :8427
     http.shutdownDelay: 15s
+    auth.config: /config/auth.yml
   # -- VMAuth annotations
   annotations: {}
   # -- VMAuth additional labels
