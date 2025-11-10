@@ -33,11 +33,15 @@ sources:
   k8s:
     type: kubernetes_logs
 transforms:
+  filter:
+    type: filter
+    inputs: [k8s]
+    condition: |
+      contains(to_string!(.kubernetes.pod_namespace), "application")
   parser:
-    inputs:
-      - k8s
+    type: remap
+    inputs: [filter]
     source: |
       .log = parse_json(.message) ?? .message
       del(.message)
       .vector_source = "vector_agent"
-    type: remap
