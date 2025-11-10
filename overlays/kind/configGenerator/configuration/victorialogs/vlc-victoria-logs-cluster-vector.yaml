@@ -40,8 +40,8 @@ transforms:
     type: remap
     inputs: [filter]
     source: |
-      _msg = .message ?? .log.message
-      .timestamp = .timestamp ?? .log.timestamp ?? now()
-      .service = .service ?? .log.service
-      .transaction_id = .transaction_id ?? .log.transaction_id
+      _msg = .message
+      .timestamp = .timestamp
+      .service = .service
+      .transaction_id = .transaction_id
       .vector_source = "vector_agent"
