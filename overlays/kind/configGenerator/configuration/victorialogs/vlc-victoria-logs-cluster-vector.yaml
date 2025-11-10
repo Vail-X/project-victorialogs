@@ -23,10 +23,8 @@ sinks:
     request:
       headers:
         VL-Time-Field: timestamp
-        VL-Stream-Fields: stream,kubernetes.pod_name,kubernetes.container_name,kubernetes.pod_namespace
-        VL-Msg-Field: log,log.msg
-        AccountID: '0'
-        ProjectID: '0'
+        VL-Msg-Field: _msg
+        VL-Stream-Fields: service,kubernetes.pod_name,kubernetes.container_name,kubernetes.pod_namespace,level,transaction_id
 sources:
   internal_metrics:
     type: internal_metrics
@@ -42,6 +40,8 @@ transforms:
     type: remap
     inputs: [filter]
     source: |
-      .log = parse_json(.message) ?? .message
-      del(.message)
+      _msg = .message ?? .log.message
+      .timestamp = .timestamp ?? .log.timestamp ?? now()
+      .service = .service ?? .log.service
+      .transaction_id = .transaction_id ?? .log.transaction_id
       .vector_source = "vector_agent"
