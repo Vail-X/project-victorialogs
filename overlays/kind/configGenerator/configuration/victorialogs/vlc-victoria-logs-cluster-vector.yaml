@@ -27,6 +27,16 @@ sinks:
         VL-Msg-Field: log,log.msg,log.message
         AccountID: '0'
         ProjectID: '0'
+  llm_analyzer:
+    compression: gzip
+    uri: 'http://llm-analysis-service.application.svc.cluster.local:8080/analyze'
+    healthcheck:
+      enabled: false
+    inputs: ['error_filter']
+    type: http
+    method: post
+    encoding:
+      codec: json
 sources:
   internal_metrics:
     type: internal_metrics
@@ -38,6 +48,11 @@ transforms:
     inputs: [k8s]
     condition: |
       contains(to_string!(.kubernetes.pod_namespace), "application")
+  error_filter:
+    type: filter
+    inputs: [parser]
+    condition: |
+      .log.level == "ERROR" || .log.level == "WARN" || .log.level == "FATAL"
   parser:
     type: remap
     inputs: [filter]
@@ -58,7 +73,6 @@ transforms:
       .log.message = "time=\"{{ ts }}\" level={{ level }} service={{ service }} txn_id={{ txnid }} msg=\"{{ original_msg }}\""
 
       del(.message)
-      del(.log.level)
       del(.log.service)
       del(.log.timestamp)
       del(.log.transaction_id)
