@@ -32,7 +32,7 @@ sinks:
     uri: 'http://llm-analysis-service.application.svc.cluster.local:8080/analyze'
     healthcheck:
       enabled: false
-    inputs: ['error_filter']
+    inputs: ['llm_data_prep']
     type: http
     method: post
     encoding:
@@ -53,6 +53,32 @@ transforms:
     inputs: [parser]
     condition: |
       .log.level == "ERROR" || .log.level == "WARN" || .log.level == "FATAL"
+  llm_data_prep:
+    type: remap
+    inputs: [error_filter]
+    source: |
+      .log_message = string!(.log.message)
+      .log_level = .log.level
+
+      .container_name = string!(.kubernetes.container_name)
+      .pod_name = string!(.kubernetes.pod_name)
+      .namespace = string!(.kubernetes.pod_namespace)
+      .app_label = string!(.kubernetes.pod_labels["app"])
+      .job_name_label = string!(.kubernetes.pod_labels["job-name"])
+      .container_image = string!(.kubernetes.container_image)
+      .timestamp = string!(._time)
+
+      . = {
+        "message": .log_message,
+        "level": .log_level,
+        "k8s_container": .container_name,
+        "k8s_pod": .pod_name,
+        "k8s_namespace": .namespace,
+        "k8s_app_label": .app_label,
+        "k8s_job_name": .job_name_label,
+        "k8s_image": .container_image,
+        "timestamp": .timestamp
+      }
   parser:
     type: remap
     inputs: [filter]
