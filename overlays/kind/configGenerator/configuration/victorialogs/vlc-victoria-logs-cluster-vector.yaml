@@ -43,20 +43,20 @@ transforms:
     inputs: [filter]
     source: |
       .log = parse_json(.message) ?? .message
-      
+
       if !exists(.log.message) {
         .log.message = string!(.log)
       }
-      
-      ts = string!(.log.timestamp ?? ._time)
-      
-      level = string!(.log.level ?? "UNKNOWN")
-      service = string!(.log.service ?? "unknown-service")
-      txnid = string!(.log.transaction_id ?? "N/A")
+
+      ts = string!(.log.timestamp)
+
+      level = string!(.log.level)
+      service = string!(.log.service)
+      txnid = string!(.log.transaction_id)
       original_msg = string!(.log.message)
-      
+
       .log.message = "time=\"{{ ts }}\" level={{ level }} service={{ service }} txn_id={{ txnid }} msg=\"{{ original_msg }}\""
-      
+
       del(.message)
       del(.log.level)
       del(.log.service)
