@@ -29,7 +29,7 @@ sinks:
         ProjectID: '0'
   llm_analyzer:
     compression: gzip
-    uri: 'http://llm-analysis-service.application.svc.cluster.local:8080/analyze'
+    uri: 'http://project-log-analyzer-service.application.svc.cluster.local:8081/analyze'
     healthcheck:
       enabled: false
     inputs: ['llm_data_prep']
