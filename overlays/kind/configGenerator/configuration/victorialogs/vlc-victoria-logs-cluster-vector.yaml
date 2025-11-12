@@ -87,8 +87,8 @@ transforms:
       container_name = string!(.kubernetes.container_name)
       pod_name = string!(.kubernetes.pod_name)
       namespace = string!(.kubernetes.pod_namespace)
-      app_label = string!(.[“kubernetes.pod_labels.app”] ?? "unknown")
-      job_name_label = string!(.[“kubernetes.pod_labels.job-name”] ?? "unknown")
+      app_label = string!(.["kubernetes.pod_labels.app"] ?? "unknown")
+      job_name_label = string!(.["kubernetes.pod_labels.job-name"] ?? "unknown")
       container_image = string!(.kubernetes.container_image)
 
       . = {
