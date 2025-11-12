@@ -48,7 +48,7 @@ sinks:
     encoding:
       codec: json
     batch:
-      max_events: 1  
+      max_events: 1
     request:
       headers:
         Content-Type: application/json
@@ -82,7 +82,7 @@ transforms:
       txnid = to_string(.log.transaction_id) ?? "unknown"
       original_msg = to_string(.log.message) ?? "unknown
 
-      .log.message = "time=\"" + ts + "\" level=" + level + " service=" + service + " txn_id=" + txnid + " msg=\"" + original_msg + "\""
+      .log.message = 'time="' + ts + '" level=' + level + ' service=' + service + ' txn_id=' + txnid + ' msg="' + original_msg + '"'
 
       del(.message)
       del(.log.service)
