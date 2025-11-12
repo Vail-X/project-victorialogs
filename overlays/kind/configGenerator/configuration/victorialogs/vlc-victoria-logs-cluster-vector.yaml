@@ -9,11 +9,6 @@ sinks:
     inputs: ['llm_data_prep']
     encoding:
       codec: json
-  internal_console:
-    type: console
-    inputs: ['vector_internal']
-    encoding:
-      codec: json
   exporter:
     address: 0.0.0.0:9090
     inputs: ['internal_metrics']
@@ -53,8 +48,6 @@ sinks:
       headers:
         Content-Type: application/json
 sources:
-  vector_internal:
-    type: internal_logs
   internal_metrics:
     type: internal_metrics
   k8s:
