@@ -4,6 +4,11 @@ api:
   playground: true
 data_dir: /vector-data-dir
 sinks:
+  llm_debug:
+    type: console
+    inputs: ['llm_data_prep']
+    encoding:
+      codec: json
   internal_console:
     type: console
     inputs: ['vector_internal']
