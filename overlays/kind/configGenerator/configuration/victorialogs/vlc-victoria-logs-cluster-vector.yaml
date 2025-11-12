@@ -82,7 +82,7 @@ transforms:
       txnid = to_string(.log.transaction_id) ?? "unknown"
       original_msg = to_string(.log.message) ?? "unknown
 
-      .log.message = "time=\"{{ ts }}\" level={{ level }} service={{ service }} txn_id={{ txnid }} msg=\"{{ original_msg }}\""
+      .log.message = "time=\"" + ts + "\" level=" + level + " service=" + service + " txn_id=" + txnid + " msg=\"" + original_msg + "\""
 
       del(.message)
       del(.log.service)
