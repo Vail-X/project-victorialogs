@@ -57,24 +57,17 @@ transforms:
     type: remap
     inputs: [error_filter]
     source: |
-      .log_message = string!(.log.message ?? "")
-      .log_level = .log.level ?? "unknown"
+      .log_message = string!(.log.message)
+      .log_level = .log.level
 
-      # --- All k8s fields now use null coalescing ---
-      .container_name = string!(.kubernetes.container_name ?? "unknown")
-      .pod_name = string!(.kubernetes.pod_name ?? "unknown")
-      .namespace = string!(.kubernetes.pod_namespace ?? "unknown")
+      .container_name = string!(.kubernetes.container_name)
+      .pod_name = string!(.kubernetes.pod_name)
+      .namespace = string!(.kubernetes.pod_namespace)
+      .app_label = string!(get(.kubernetes.pod_labels, ["app"])?? "unknown")
+      .job_name_label = string!(get(.kubernetes.pod_labels, ["job-name"])?? "unknown")
+      .container_image = string!(.kubernetes.container_image)
+      .timestamp = string!(._time)
 
-      # Fix 1: Ensure '.app' is not null before string!()
-      .app_label = string!(.kubernetes.pod_labels.app ?? "unknown") 
-
-      # Fix 2: Your existing safe method for job-name
-      .job_name_label = string!(get(.kubernetes.pod_labels, ["job-name"]) ?? "unknown")
-
-      .container_image = string!(.kubernetes.container_image ?? "unknown")
-      .timestamp = string!(._time ?? "unknown")
-
-      # Final map creation (This structure is correct)
       . = {
         "message": .log_message,
         "level": .log_level,
