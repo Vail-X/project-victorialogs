@@ -64,7 +64,7 @@ transforms:
       .pod_name = string!(.kubernetes.pod_name)
       .namespace = string!(.kubernetes.pod_namespace)
       .app_label = string!(.kubernetes.pod_labels.app)
-      .job_name_label = string!(get(.kubernetes.pod_labels, ["job-name"]))
+      .job_name_label = string!(get(.kubernetes.pod_labels, ["job-name"])?? "unknown")
       .container_image = string!(.kubernetes.container_image)
       .timestamp = string!(._time)
 
