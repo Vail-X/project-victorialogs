@@ -87,16 +87,16 @@ transforms:
     type: remap
     inputs: [error_filter]
     source: |
-      message = string!(.log.message)
-      level = string!(.log.level)
-      ts = to_string!(.timestamp)
+      message = to_string(.log.message) ?? "unknown"
+      level = to_string(.log.level) ?? "unknown"
+      ts = to_string(.timestamp) ?? "unknown"
 
-      container_name = string!(.kubernetes.container_name)
-      pod_name = string!(.kubernetes.pod_name)
-      namespace = string!(.kubernetes.pod_namespace)
-      app_label = string!(get(., ["kubernetes.pod_labels.app"]) ?? "unknown")
-      job_name_label = string!(get(., ["kubernetes.pod_labels.job-name"]) ?? "unknown")
-      container_image = string!(.kubernetes.container_image)
+      container_name = to_string(.kubernetes.container_name) ?? "unknown"
+      pod_name = to_string(.kubernetes.pod_name) ?? "unknown"
+      namespace = to_string(.kubernetes.pod_namespace) ?? "unknown"
+      app_label = to_string(get(., ["kubernetes.pod_labels.app"])) ?? "unknown"
+      job_name_label = to_string(get(., ["kubernetes.pod_labels.job-name"])) ?? "unknown"
+      container_image = to_string(.kubernetes.container_image) ?? "unknown"
 
       . = {
         "message": message,
