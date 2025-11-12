@@ -48,37 +48,6 @@ transforms:
     inputs: [k8s]
     condition: |
       contains(to_string!(.kubernetes.pod_namespace), "application")
-  error_filter:
-    type: filter
-    inputs: [parser]
-    condition: |
-      .log.level == "ERROR" || .log.level == "WARN" || .log.level == "FATAL"
-  llm_data_prep:
-    type: remap
-    inputs: [error_filter]
-    source: |
-      .log_message = string!(.log.message)
-      .log_level = .log.level
-
-      .container_name = string!(.kubernetes.container_name)
-      .pod_name = string!(.kubernetes.pod_name)
-      .namespace = string!(.kubernetes.pod_namespace)
-      .app_label = string!(get(.kubernetes.pod_labels, ["app"])?? "unknown")
-      .job_name_label = string!(get(.kubernetes.pod_labels, ["job-name"])?? "unknown")
-      .container_image = string!(.kubernetes.container_image)
-      .timestamp = string!(._time)
-
-      . = {
-        "message": .log_message,
-        "level": .log_level,
-        "k8s_container": .container_name,
-        "k8s_pod": .pod_name,
-        "k8s_namespace": .namespace,
-        "k8s_app_label": .app_label,
-        "k8s_job_name": .job_name_label,
-        "k8s_image": .container_image,
-        "timestamp": .timestamp
-      }
   parser:
     type: remap
     inputs: [filter]
@@ -102,3 +71,34 @@ transforms:
       del(.log.service)
       del(.log.timestamp)
       del(.log.transaction_id)
+  error_filter:
+    type: filter
+    inputs: [parser]
+    condition: |
+      .log.level == "ERROR" || .log.level == "WARN" || .log.level == "FATAL"
+  llm_data_prep:
+    type: remap
+    inputs: [error_filter]
+    source: |
+      message = string!(.log.message)
+      level = string!(.log.level)
+      ts = to_string!(.timestamp)
+
+      container_name = string!(.kubernetes.container_name)
+      pod_name = string!(.kubernetes.pod_name)
+      namespace = string!(.kubernetes.pod_namespace)
+      app_label = string!(.[“kubernetes.pod_labels.app”] ?? "unknown")
+      job_name_label = string!(.[“kubernetes.pod_labels.job-name”] ?? "unknown")
+      container_image = string!(.kubernetes.container_image)
+
+      . = {
+        "message": message,
+        "level": level,
+        "k8s_container": container_name,
+        "k8s_pod": pod_name,
+        "k8s_namespace": namespace,
+        "k8s_app_label": app_label,
+        "k8s_job_name": job_name_label,
+        "k8s_image": container_image,
+        "timestamp": ts
+      }
