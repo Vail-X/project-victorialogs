@@ -73,21 +73,23 @@ transforms:
       .log = parse_json(.message) ?? .message
 
       if !exists(.log.message) {
-        .log.message = string!(.log)
+        .log.message = to_string(.log) ?? "unknown"
       }
 
       ts = to_string(.log.timestamp) ?? "unknown"
       level = to_string(.log.level) ?? "unknown"
       service = to_string(.log.service) ?? "unknown"
       txnid = to_string(.log.transaction_id) ?? "unknown"
-      original_msg = to_string(.log.message) ?? "unknown
+      original_msg = to_string(.log.message) ?? "unknown"
 
-      .log.message = 'time="' + ts + '" level=' + level + ' service=' + service + ' txn_id=' + txnid + ' msg="' + original_msg + '"'
+      # Build the formatted message without problematic quotes
+      .log.message = "time=" + ts + " level=" + level + " service=" + service + " txn_id=" + txnid + " msg=" + original_msg
 
       del(.message)
       del(.log.service)
       del(.log.timestamp)
       del(.log.transaction_id)
+
   error_filter:
     type: filter
     inputs: [parser]
