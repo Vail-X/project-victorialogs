@@ -64,7 +64,8 @@ transforms:
     type: filter
     inputs: [k8s]
     condition: |
-      contains(to_string!(.kubernetes.pod_namespace), "application")
+      contains(to_string!(.kubernetes.pod_namespace), "application") &&
+      !contains(to_string!(.kubernetes.pod_name), "project-log-analyzer")
   parser:
     type: remap
     inputs: [filter]
@@ -75,12 +76,11 @@ transforms:
         .log.message = string!(.log)
       }
 
-      ts = string!(.log.timestamp)
-
-      level = string!(.log.level)
-      service = string!(.log.service)
-      txnid = string!(.log.transaction_id)
-      original_msg = string!(.log.message)
+      ts = to_string(.log.timestamp) ?? "unknown"
+      level = to_string(.log.level) ?? "unknown"
+      service = to_string(.log.service) ?? "unknown"
+      txnid = to_string(.log.transaction_id) ?? "unknown"
+      original_msg = to_string(.log.message) ?? "unknown
 
       .log.message = "time=\"{{ ts }}\" level={{ level }} service={{ service }} txn_id={{ txnid }} msg=\"{{ original_msg }}\""
 
