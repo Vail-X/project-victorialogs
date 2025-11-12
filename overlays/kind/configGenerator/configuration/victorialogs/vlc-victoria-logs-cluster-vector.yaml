@@ -4,6 +4,11 @@ api:
   playground: true
 data_dir: /vector-data-dir
 sinks:
+  internal_console:
+    type: console
+    inputs: ['vector_internal']
+    encoding:
+      codec: json
   exporter:
     address: 0.0.0.0:9090
     inputs: ['internal_metrics']
@@ -38,6 +43,8 @@ sinks:
     encoding:
       codec: json
 sources:
+  vector_internal:
+    type: internal_logs
   internal_metrics:
     type: internal_metrics
   k8s:
