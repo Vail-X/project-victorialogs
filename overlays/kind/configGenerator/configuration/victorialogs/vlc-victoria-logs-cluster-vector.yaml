@@ -36,14 +36,12 @@ sinks:
     compression: gzip
     uri: 'http://project-log-analyzer-service.application.svc.cluster.local:8081/analyze'
     healthcheck:
-      enabled: true
+      enabled: false
     inputs: ['llm_data_prep']
     type: http
     method: post
     encoding:
       codec: json
-    batch:
-      max_events: 1
     request:
       headers:
         Content-Type: application/json
