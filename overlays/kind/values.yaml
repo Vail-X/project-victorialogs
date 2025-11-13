@@ -273,9 +273,9 @@ vlselect:
 
   vmServiceScrape:
     # -- Enable VMServiceScrape for vlselect component, which is managed by [vm-operator](https://docs.victoriametrics.com/operator/quick-start/).
-    enabled: false
+    enabled: true
     # -- Create ServiceMonitor instead of VMServiceScrape, which is managed by [prometheus-operator](https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1.ServiceMonitor)
-    useServiceMonitor: false
+    useServiceMonitor: true
     # -- Target namespace of VMServiceScrape manifest
     namespace: ''
     # -- VMServiceScrape labels
@@ -287,8 +287,8 @@ vlselect:
         - port: http
           # -- Basic auth params for VMServiceScrape
           # basicAuth: {}
-          # interval: 15s
-          # scrapeTimeout: 5s
+          interval: 15s
+          scrapeTimeout: 5s
           # -- vmServiceScrape relabelings
           # relabelings: []
           # -- vmServiceScrape metricRelabelings
