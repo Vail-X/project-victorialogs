@@ -2,55 +2,54 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: victoria-logs-cluster.rules
-  namespace: vm
   labels:
-    app: victorialogs
-    prometheus: kube-prometheus-stack
+    app.kubernetes.io/name: victoria-logs-cluster
+    app.kubernetes.io/instance: vlc
 spec:
   groups:
     - name: victorialogs.health
       interval: 30s
       rules:
         - alert: VLSelectDown
-          expr: up{job="vlc-victoria-logs-cluster-vlselect"} == 0
+          expr: up{job="vlc-victoria-logs-cluster-vlselect"} == 0 or absent_over_time(up{job="vlc-victoria-logs-cluster-vlselect"}[3m])
           for: 1s
           labels:
             severity: critical
             component: vlselect
-            service: victorialogs
+            service: victoria-logs
           annotations:
             summary: 'VLSelect is down'
-            description: 'VLSelect instance {{ $labels.instance }} has been down for more than 2 minutes.'
+            description: 'VLSelect instance {{ $labels.pod }} has been down for more than 2 minutes.'
 
         - alert: VLInsertDown
-          expr: up{job="vlc-victoria-logs-cluster-vlinsert"} == 0
+          expr: up{job="vlc-victoria-logs-cluster-vlinsert"} == 0 or absent_over_time(up{job="vlc-victoria-logs-cluster-vlinsert"}[3m])
           for: 2m
           labels:
             severity: critical
             component: vlinsert
-            service: victorialogs
+            service: victoria-logs
           annotations:
             summary: 'VLInsert is down'
-            description: 'VLInsert instance {{ $labels.instance }} has been down for more than 2 minutes.'
+            description: 'VLInsert instance {{ $labels.pod }} has been down for more than 2 minutes.'
 
         - alert: VLStorageDown
-          expr: up{job="vlc-victoria-logs-cluster-vlstorage"} == 0
+          expr: up{job="vlc-victoria-logs-cluster-vlstorage"} == 0 or absent_over_time(up{job="vlc-victoria-logs-cluster-vlstorage"}[3m])
           for: 2m
           labels:
             severity: critical
             component: vlstorage
-            service: victorialogs
+            service: victoria-logs
           annotations:
             summary: 'VLStorage is down'
-            description: 'VLStorage instance {{ $labels.instance }} has been down for more than 2 minutes.'
+            description: 'VLStorage instance {{ $labels.pod }} has been down for more than 2 minutes.'
 
         - alert: VMAuthDown
-          expr: up{job="vlc-victoria-logs-cluster-vmauth"} == 0
+          expr: up{job="vlc-victoria-logs-cluster-vmauth"} == 0 or absent_over_time(up{job="vlc-victoria-logs-cluster-vmauth"}[3m])
           for: 2m
           labels:
             severity: critical
             component: vmauth
-            service: victorialogs
+            service: victoria-logs
           annotations:
             summary: 'VMAuth is down'
-            description: 'VMAuth instance {{ $labels.instance }} has been down for more than 2 minutes.'
+            description: 'VMAuth instance {{ $labels.pod }} has been down for more than 2 minutes.'
