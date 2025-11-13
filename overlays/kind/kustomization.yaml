@@ -4,6 +4,7 @@ namespace: vm
 
 resources:
   - ./resources/service.yaml
+  - ./resources/prometheusrule.yaml
   - ./configGenerator
 
 helmGlobals:

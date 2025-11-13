@@ -1,0 +1,56 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: victoria-logs-cluster.rules
+  namespace: vm
+  labels:
+    app: victorialogs
+    prometheus: kube-prometheus-stack
+spec:
+  groups:
+    - name: victorialogs.health
+      interval: 30s
+      rules:
+        - alert: VLSelectDown
+          expr: up{job="vlc-victoria-logs-cluster-vlselect"} == 0
+          for: 1s
+          labels:
+            severity: critical
+            component: vlselect
+            service: victorialogs
+          annotations:
+            summary: 'VLSelect is down'
+            description: 'VLSelect instance {{ $labels.instance }} has been down for more than 2 minutes.'
+
+        - alert: VLInsertDown
+          expr: up{job="vlc-victoria-logs-cluster-vlinsert"} == 0
+          for: 2m
+          labels:
+            severity: critical
+            component: vlinsert
+            service: victorialogs
+          annotations:
+            summary: 'VLInsert is down'
+            description: 'VLInsert instance {{ $labels.instance }} has been down for more than 2 minutes.'
+
+        - alert: VLStorageDown
+          expr: up{job="vlc-victoria-logs-cluster-vlstorage"} == 0
+          for: 2m
+          labels:
+            severity: critical
+            component: vlstorage
+            service: victorialogs
+          annotations:
+            summary: 'VLStorage is down'
+            description: 'VLStorage instance {{ $labels.instance }} has been down for more than 2 minutes.'
+
+        - alert: VMAuthDown
+          expr: up{job="vlc-victoria-logs-cluster-vmauth"} == 0
+          for: 2m
+          labels:
+            severity: critical
+            component: vmauth
+            service: victorialogs
+          annotations:
+            summary: 'VMAuth is down'
+            description: 'VMAuth instance {{ $labels.instance }} has been down for more than 2 minutes.'
