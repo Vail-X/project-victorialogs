@@ -8,11 +8,10 @@ metadata:
 spec:
   groups:
     - name: victorialogs.health
-      interval: 30s
       rules:
         - alert: VLSelectDown
-          expr: up{job="vlc-victoria-logs-cluster-vlselect"} == 0 or absent_over_time(up{job="vlc-victoria-logs-cluster-vlselect"}[3m])
-          for: 1s
+          expr: up{job="vlc-victoria-logs-cluster-vlselect"} == 0 or absent_over_time(up{job="vlc-victoria-logs-cluster-vlselect"}[1m])
+          for: 2m
           labels:
             severity: critical
             component: vlselect
@@ -22,7 +21,7 @@ spec:
             description: 'VLSelect instance {{ $labels.pod }} has been down for more than 2 minutes.'
 
         - alert: VLInsertDown
-          expr: up{job="vlc-victoria-logs-cluster-vlinsert"} == 0 or absent_over_time(up{job="vlc-victoria-logs-cluster-vlinsert"}[3m])
+          expr: up{job="vlc-victoria-logs-cluster-vlinsert"} == 0 or absent_over_time(up{job="vlc-victoria-logs-cluster-vlinsert"}[1m])
           for: 2m
           labels:
             severity: critical
@@ -33,7 +32,7 @@ spec:
             description: 'VLInsert instance {{ $labels.pod }} has been down for more than 2 minutes.'
 
         - alert: VLStorageDown
-          expr: up{job="vlc-victoria-logs-cluster-vlstorage"} == 0 or absent_over_time(up{job="vlc-victoria-logs-cluster-vlstorage"}[3m])
+          expr: up{job="vlc-victoria-logs-cluster-vlstorage"} == 0 or absent_over_time(up{job="vlc-victoria-logs-cluster-vlstorage"}[1m])
           for: 2m
           labels:
             severity: critical
@@ -44,7 +43,7 @@ spec:
             description: 'VLStorage instance {{ $labels.pod }} has been down for more than 2 minutes.'
 
         - alert: VMAuthDown
-          expr: up{job="vlc-victoria-logs-cluster-vmauth"} == 0 or absent_over_time(up{job="vlc-victoria-logs-cluster-vmauth"}[3m])
+          expr: up{job="vlc-victoria-logs-cluster-vmauth"} == 0 or absent_over_time(up{job="vlc-victoria-logs-cluster-vmauth"}[1m])
           for: 2m
           labels:
             severity: critical
