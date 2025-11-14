@@ -33,13 +33,15 @@ spec:
             /
             process_cpu_cores_available{job=~"vlc-victoria-logs-cluster-vl.*|vlc-victoria-logs-cluster-vmauth"}
             > 0.0001
-          for: 5m
+          for: 2m
           labels:
             severity: warning
             resource: cpu
           annotations:
             summary: 'CPU High ({{ $labels.job }}) - {{ $value | printf "%.5f%%" }}'
-            description: '{{ $labels.job }} is using over 75% of its available CPU cores for more than 5 minutes.'
+            description: |
+              {{ $labels.job }} is using over 75% of its available CPU cores.
+              {{ if $labels.pod }}Pod: {{ $labels.pod }}{{ end }}
 
         - alert: ComponentCPUCritical
           expr: |
@@ -53,7 +55,9 @@ spec:
             resource: cpu
           annotations:
             summary: 'CPU Critical ({{ $labels.job }}) - {{ $value | printf "%.5f%%" }}'
-            description: '{{ $labels.job }} is utilizing over 90% of its available CPU and is at risk of throttling.'
+            description: |
+              {{ $labels.job }} is utilizing over 90% of its available CPU cores.
+              {{ if $labels.pod }}Pod: {{ $labels.pod }}{{ end }}
 
         - alert: ComponentMemoryHigh
           expr: |
@@ -61,13 +65,15 @@ spec:
             /
             process_memory_limit_bytes{job=~"vlc-victoria-logs-cluster-vl.*|vlc-victoria-logs-cluster-vmauth"}
             > 0.001
-          for: 10m
+          for: 2m
           labels:
             severity: warning
             resource: memory
           annotations:
             summary: 'Memory High ({{ $labels.job }}) - {{ $value | printf "%.5f%%" }}'
-            description: '{{ $labels.job }} is using over 75% of its allocated memory for more than 10 minutes.'
+            description: |
+              {{ $labels.job }} is using over 75% of its allocated memory.
+              {{ if $labels.pod }}Pod: {{ $labels.pod }}{{ end }}
 
         - alert: ComponentMemoryCritical
           expr: |
@@ -81,4 +87,6 @@ spec:
             resource: memory
           annotations:
             summary: 'Memory Critical ({{ $labels.job }}) - {{ $value | printf "%.5f%%" }}'
-            description: '{{ $labels.job }} is using over 90% of its memory and is at severe risk of OOM kill.'
+            description: |
+              {{ $labels.job }} is using over 90% of its allocated memory.
+              {{ if $labels.pod }}Pod: {{ $labels.pod }}{{ end }}
