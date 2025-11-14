@@ -38,7 +38,7 @@ spec:
             severity: warning
             resource: cpu
           annotations:
-            summary: 'CPU High ({{ $labels.job }}) - {{ $value | printf "%.0f%%" }}'
+            summary: 'CPU High ({{ $labels.job }}) - {{ $value | printf "%.5f%%" }}'
             description: '{{ $labels.job }} is using over 75% of its available CPU cores for more than 5 minutes.'
 
         - alert: ComponentCPUCritical
@@ -52,7 +52,7 @@ spec:
             severity: critical
             resource: cpu
           annotations:
-            summary: 'CPU Critical ({{ $labels.job }}) - {{ $value | printf "%.0f%%" }}'
+            summary: 'CPU Critical ({{ $labels.job }}) - {{ $value | printf "%.5f%%" }}'
             description: '{{ $labels.job }} is utilizing over 90% of its available CPU and is at risk of throttling.'
 
         - alert: ComponentMemoryHigh
@@ -66,7 +66,7 @@ spec:
             severity: warning
             resource: memory
           annotations:
-            summary: 'Memory High ({{ $labels.job }}) - {{ $value | printf "%.0f%%" }}'
+            summary: 'Memory High ({{ $labels.job }}) - {{ $value | printf "%.5f%%" }}'
             description: '{{ $labels.job }} is using over 75% of its allocated memory for more than 10 minutes.'
 
         - alert: ComponentMemoryCritical
@@ -80,5 +80,5 @@ spec:
             severity: critical
             resource: memory
           annotations:
-            summary: 'Memory Critical ({{ $labels.job }}) - {{ $value | printf "%.0f%%" }}'
+            summary: 'Memory Critical ({{ $labels.job }}) - {{ $value | printf "%.5f%%" }}'
             description: '{{ $labels.job }} is using over 90% of its memory and is at severe risk of OOM kill.'
