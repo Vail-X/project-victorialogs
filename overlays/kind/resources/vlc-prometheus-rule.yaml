@@ -18,7 +18,10 @@ spec:
             service: victoria-logs
           annotations:
             summary: 'VLSelect is down'
-            description: 'VLSelect instance {{ $labels.pod }} has been down for more than 2 minutes.'
+            description: |
+              VLSelect instance is down and not responding.
+              {{ if $labels.pod }}Pod: {{ $labels.pod }}{{ end }}
+              {{ if $labels.instance }}Instance: {{ $labels.instance }}{{ end }}
 
         - alert: VLInsertDown
           expr: up{job="vlc-victoria-logs-cluster-vlinsert"} == 0 or absent_over_time(up{job="vlc-victoria-logs-cluster-vlinsert"}[1m])
@@ -29,7 +32,10 @@ spec:
             service: victoria-logs
           annotations:
             summary: 'VLInsert is down'
-            description: 'VLInsert instance {{ $labels.pod }} has been down for more than 2 minutes.'
+            description: |
+              VLInsert instance is down and not responding.
+              {{ if $labels.pod }}Pod: {{ $labels.pod }}{{ end }}
+              {{ if $labels.instance }}Instance: {{ $labels.instance }}{{ end }}
 
         - alert: VLStorageDown
           expr: up{job="vlc-victoria-logs-cluster-vlstorage"} == 0 or absent_over_time(up{job="vlc-victoria-logs-cluster-vlstorage"}[1m])
@@ -40,7 +46,10 @@ spec:
             service: victoria-logs
           annotations:
             summary: 'VLStorage is down'
-            description: 'VLStorage instance {{ $labels.pod }} has been down for more than 2 minutes.'
+            description: |
+              VLStorage instance is down and not responding.
+              {{ if $labels.pod }}Pod: {{ $labels.pod }}{{ end }}
+              {{ if $labels.instance }}Instance: {{ $labels.instance }}{{ end }}
 
         - alert: VMAuthDown
           expr: up{job="vlc-victoria-logs-cluster-vmauth"} == 0 or absent_over_time(up{job="vlc-victoria-logs-cluster-vmauth"}[1m])
@@ -51,4 +60,7 @@ spec:
             service: victoria-logs
           annotations:
             summary: 'VMAuth is down'
-            description: 'VMAuth instance {{ $labels.pod }} has been down for more than 2 minutes.'
+            description: |
+              VMAuth instance is down and not responding.
+              {{ if $labels.pod }}Pod: {{ $labels.pod }}{{ end }}
+              {{ if $labels.instance }}Instance: {{ $labels.instance }}{{ end }}
