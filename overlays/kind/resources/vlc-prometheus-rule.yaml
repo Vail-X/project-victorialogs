@@ -7,60 +7,78 @@ metadata:
     app.kubernetes.io/instance: vlc
 spec:
   groups:
-    - name: victorialogs.health
+    - name: vl.availability
       rules:
-        - alert: VLSelectDown
-          expr: up{job="vlc-victoria-logs-cluster-vlselect"} == 0 or absent_over_time(up{job="vlc-victoria-logs-cluster-vlselect"}[1m])
+        - alert: ComponentDown
+          expr: |
+            up{job=~"vlc-victoria-logs-cluster-vl.*|vlc-victoria-logs-cluster-vmauth"} == 0
+            or
+            absent_over_time(up{job=~"vlc-victoria-logs-cluster-vl.*|vlc-victoria-logs-cluster-vmauth"}[1m])
           for: 2m
           labels:
             severity: critical
-            component: vlselect
             service: victoria-logs
           annotations:
-            summary: 'VLSelect is down'
+            summary: 'Component Down/Missing ({{ $labels.job }})'
             description: |
-              VLSelect instance is down and not responding.
+              The critical component (Job: {{ $labels.job }}) has been unavailable for more than 2 minutes.
               {{ if $labels.pod }}Pod: {{ $labels.pod }}{{ end }}
-              {{ if $labels.instance }}Instance: {{ $labels.instance }}{{ end }}
+              {{ if $labels.instance }} Instance: {{ $labels.instance }}{{ end }}
 
-        - alert: VLInsertDown
-          expr: up{job="vlc-victoria-logs-cluster-vlinsert"} == 0 or absent_over_time(up{job="vlc-victoria-logs-cluster-vlinsert"}[1m])
-          for: 2m
+    - name: vl.component.resources
+      rules:
+        - alert: ComponentCPUHigh
+          expr: |
+            rate(process_cpu_seconds_total{job=~"vlc-victoria-logs-cluster-vl.*|vlc-victoria-logs-cluster-vmauth"}[5m])
+            /
+            process_cpu_cores_available{job=~"vlc-victoria-logs-cluster-vl.*|vlc-victoria-logs-cluster-vmauth"}
+            > 0.0001
+          for: 5m
           labels:
-            severity: critical
-            component: vlinsert
-            service: victoria-logs
+            severity: warning
+            resource: cpu
           annotations:
-            summary: 'VLInsert is down'
-            description: |
-              VLInsert instance is down and not responding.
-              {{ if $labels.pod }}Pod: {{ $labels.pod }}{{ end }}
-              {{ if $labels.instance }}Instance: {{ $labels.instance }}{{ end }}
+            summary: 'CPU High ({{ $labels.job }}) - {{ $value | printf "%.0f%%" }}'
+            description: '{{ $labels.job }} is using over 75% of its available CPU cores for more than 5 minutes.'
 
-        - alert: VLStorageDown
-          expr: up{job="vlc-victoria-logs-cluster-vlstorage"} == 0 or absent_over_time(up{job="vlc-victoria-logs-cluster-vlstorage"}[1m])
+        - alert: ComponentCPUCritical
+          expr: |
+            rate(process_cpu_seconds_total{job=~"vlc-victoria-logs-cluster-vl.*|vlc-victoria-logs-cluster-vmauth"}[5m])
+            /
+            process_cpu_cores_available{job=~"vlc-victoria-logs-cluster-vl.*|vlc-victoria-logs-cluster-vmauth"}
+            > 0.90
           for: 2m
           labels:
             severity: critical
-            component: vlstorage
-            service: victoria-logs
+            resource: cpu
           annotations:
-            summary: 'VLStorage is down'
-            description: |
-              VLStorage instance is down and not responding.
-              {{ if $labels.pod }}Pod: {{ $labels.pod }}{{ end }}
-              {{ if $labels.instance }}Instance: {{ $labels.instance }}{{ end }}
+            summary: 'CPU Critical ({{ $labels.job }}) - {{ $value | printf "%.0f%%" }}'
+            description: '{{ $labels.job }} is utilizing over 90% of its available CPU and is at risk of throttling.'
 
-        - alert: VMAuthDown
-          expr: up{job="vlc-victoria-logs-cluster-vmauth"} == 0 or absent_over_time(up{job="vlc-victoria-logs-cluster-vmauth"}[1m])
+        - alert: ComponentMemoryHigh
+          expr: |
+            process_resident_memory_bytes{job=~"vlc-victoria-logs-cluster-vl.*|vlc-victoria-logs-cluster-vmauth"}
+            /
+            process_memory_limit_bytes{job=~"vlc-victoria-logs-cluster-vl.*|vlc-victoria-logs-cluster-vmauth"}
+            > 0.001
+          for: 10m
+          labels:
+            severity: warning
+            resource: memory
+          annotations:
+            summary: 'Memory High ({{ $labels.job }}) - {{ $value | printf "%.0f%%" }}'
+            description: '{{ $labels.job }} is using over 75% of its allocated memory for more than 10 minutes.'
+
+        - alert: ComponentMemoryCritical
+          expr: |
+            process_resident_memory_bytes{job=~"vlc-victoria-logs-cluster-vl.*|vlc-victoria-logs-cluster-vmauth"}
+            /
+            process_memory_limit_bytes{job=~"vlc-victoria-logs-cluster-vl.*|vlc-victoria-logs-cluster-vmauth"}
+            > 0.90
           for: 2m
           labels:
             severity: critical
-            component: vmauth
-            service: victoria-logs
+            resource: memory
           annotations:
-            summary: 'VMAuth is down'
-            description: |
-              VMAuth instance is down and not responding.
-              {{ if $labels.pod }}Pod: {{ $labels.pod }}{{ end }}
-              {{ if $labels.instance }}Instance: {{ $labels.instance }}{{ end }}
+            summary: 'Memory Critical ({{ $labels.job }}) - {{ $value | printf "%.0f%%" }}'
+            description: '{{ $labels.job }} is using over 90% of its memory and is at severe risk of OOM kill.'
