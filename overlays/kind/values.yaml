@@ -273,9 +273,9 @@ vlselect:
 
   vmServiceScrape:
     # -- Enable VMServiceScrape for vlselect component, which is managed by [vm-operator](https://docs.victoriametrics.com/operator/quick-start/).
-    enabled: true
+    enabled: false
     # -- Create ServiceMonitor instead of VMServiceScrape, which is managed by [prometheus-operator](https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1.ServiceMonitor)
-    useServiceMonitor: true
+    useServiceMonitor: false
     # -- Target namespace of VMServiceScrape manifest
     namespace: ''
     # -- VMServiceScrape labels
