@@ -55,8 +55,8 @@ sinks:
       type: http
       uri: http://jaeger-collector.observability.svc.cluster.local:4318/v1/traces
       method: post
-    encoding:
-      codec: json
+      encoding:
+        codec: json
 
 sources:
   internal_metrics:
