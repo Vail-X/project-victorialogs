@@ -138,7 +138,7 @@ transforms:
       }
   trace_tagger:
     type: remap
-    inputs: ['otel_traces_in']
+    inputs: ['otel_traces_in.traces'] 
     source: |
       .attributes.vector_processed = "true"
 
