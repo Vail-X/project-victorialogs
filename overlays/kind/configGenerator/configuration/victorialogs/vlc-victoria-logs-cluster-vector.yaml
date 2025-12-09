@@ -47,15 +47,16 @@ sinks:
         Content-Type: application/json
   jaeger_traces_out:
     compression: gzip
-    endpoint: http://jaeger-collector.observability.svc.cluster.local:4318/v1/traces
     healthcheck:
       enabled: false
     inputs: ['trace_tagger']
     type: opentelemetry
     protocol:
       type: http
-    encoding:
-      codec: protobuf
+      uri: http://jaeger-collector.observability.svc.cluster.local:4318/v1/traces
+      method: post
+      encoding:
+        codec: protobuf
 
 sources:
   internal_metrics:
