@@ -52,7 +52,8 @@ sinks:
     protocol:
       type: http
       uri: 'http://jaeger-collector.observability.svc.cluster.local:4318/v1/traces'
-
+    encoding:
+      codec: otlp
 sources:
   internal_metrics:
     type: internal_metrics
