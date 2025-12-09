@@ -45,13 +45,7 @@ sinks:
     request:
       headers:
         Content-Type: application/json
-  jaeger:
-    type: opentelemetry
-    inputs: ['otel_source']
-    compression: gzip
-    protocol:
-      type: http
-      uri: 'http://jaeger-collector.observability.svc.cluster.local:4318/v1/traces'
+
 sources:
   internal_metrics:
     type: internal_metrics

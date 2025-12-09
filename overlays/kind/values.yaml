@@ -1061,16 +1061,8 @@ vector:
     - name: prom-exporter
       containerPort: 9090
       protocol: TCP
-    - name: otlp-grpc
-      port: 4317
-      targetPort: 4317
-      protocol: TCP
-    - name: otlp-http
-      port: 4318
-      targetPort: 4318
-      protocol: TCP
   service:
-    enabled: true
+    enabled: false
   existingConfigMaps:
     - vector-vl-config
   # -- Forces custom configuration creation in a given namespace even if vector.enabled is false
