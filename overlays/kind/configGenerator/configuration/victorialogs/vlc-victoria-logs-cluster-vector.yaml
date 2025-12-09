@@ -47,11 +47,15 @@ sinks:
         Content-Type: application/json
   jaeger_traces_out:
     compression: gzip
-    endpoint: http://jaeger-collector.observability.svc.cluster.local:4317
+    endpoint: http://jaeger-collector.observability.svc.cluster.local:4318/v1/traces
     healthcheck:
       enabled: false
     inputs: ['trace_tagger']
     type: opentelemetry
+    protocol:
+      type: http
+    encoding:
+      codec: protobuf
 
 sources:
   internal_metrics:
@@ -62,6 +66,12 @@ sources:
     type: opentelemetry
     grpc:
       address: 0.0.0.0:4317
+    http:
+      address: 0.0.0.0:4318
+      headers: []
+      keepalive:
+        max_connection_age_jitter_factor: 0.1
+        max_connection_age_secs: 300
 
 transforms:
   filter:
