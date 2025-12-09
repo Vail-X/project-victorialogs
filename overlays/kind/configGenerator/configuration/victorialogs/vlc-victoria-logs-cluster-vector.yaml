@@ -45,25 +45,20 @@ sinks:
     request:
       headers:
         Content-Type: application/json
-  jaeger_traces_out:
-    compression: gzip
-    healthcheck:
-      enabled: false
-    inputs: ['trace_tagger']
+  jaeger:
     type: opentelemetry
+    inputs: ['otel_source']
+    compression: gzip
     protocol:
       type: http
-      uri: http://jaeger-collector.observability.svc.cluster.local:4318/v1/traces
-      method: post
-      encoding:
-        codec: otlp
+      uri: 'http://jaeger-collector.observability.svc.cluster.local:4318/v1/traces'
 
 sources:
   internal_metrics:
     type: internal_metrics
   k8s:
     type: kubernetes_logs
-  otel_traces_in:
+  otel_source:
     type: opentelemetry
     grpc:
       address: 0.0.0.0:4317
@@ -131,13 +126,4 @@ transforms:
         "k8s_job_name": job_name_label,
         "k8s_image": container_image,
         "timestamp": ts
-      }
-  trace_tagger:
-    type: remap
-    inputs: ['otel_traces_in.traces'] 
-    source: |
-      .attributes.vector_processed = "true"
-
-      if .name == "manual-test-span" {
-        .name = "vector-verified-span"
       }
