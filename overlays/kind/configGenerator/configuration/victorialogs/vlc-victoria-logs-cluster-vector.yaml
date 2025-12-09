@@ -52,7 +52,6 @@ sinks:
       enabled: false
     inputs: ['trace_tagger']
     type: opentelemetry
-    protocol: grpc
 
 sources:
   internal_metrics:
