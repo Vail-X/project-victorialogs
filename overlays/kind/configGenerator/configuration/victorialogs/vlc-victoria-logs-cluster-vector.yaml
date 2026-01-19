@@ -18,7 +18,7 @@ sinks:
     uri: 'http://vlc-victoria-logs-cluster-vlinsert.vm.svc.cluster.local:9481/insert/jsonline'
     healthcheck:
       enabled: false
-    inputs: ['parser_vlogs']
+    inputs: ['parser']
     type: http
     method: post
     encoding:
@@ -65,12 +65,6 @@ transforms:
     condition: |
       contains(to_string!(.kubernetes.pod_namespace), "application") &&
       !contains(to_string!(.kubernetes.pod_name), "project-log-analyzer")
-  parser_vlogs:
-    type: remap
-    inputs: [filter]
-    source: |
-      .log = parse_json(.message) ?? .message
-      del(.message)
   parser:
     type: remap
     inputs: [filter]
