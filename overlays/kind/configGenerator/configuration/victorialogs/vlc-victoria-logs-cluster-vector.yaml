@@ -59,18 +59,18 @@ sources:
       address: 0.0.0.0:4318
 
 transforms:
-  parser_vlogs:
-    type: remap
-    inputs: [k8s]
-    source: |
-      .log = parse_json(.message) ?? .message
-      del(.message)
   filter:
     type: filter
     inputs: [k8s]
     condition: |
       contains(to_string!(.kubernetes.pod_namespace), "application") &&
       !contains(to_string!(.kubernetes.pod_name), "project-log-analyzer")
+  parser_vlogs:
+    type: remap
+    inputs: [filter]
+    source: |
+      .log = parse_json(.message) ?? .message
+      del(.message)
   parser:
     type: remap
     inputs: [filter]
