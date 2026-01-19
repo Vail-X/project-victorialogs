@@ -18,7 +18,7 @@ sinks:
     uri: 'http://vlc-victoria-logs-cluster-vlinsert.vm.svc.cluster.local:9481/insert/jsonline'
     healthcheck:
       enabled: false
-    inputs: ['parser']
+    inputs: ['parser_vlogs']
     type: http
     method: post
     encoding:
@@ -59,6 +59,12 @@ sources:
       address: 0.0.0.0:4318
 
 transforms:
+  parser_vlogs:
+    type: remap
+    inputs: [k8s]
+    source: |
+      .log = parse_json(.message) ?? .message
+      del(.message)
   filter:
     type: filter
     inputs: [k8s]
