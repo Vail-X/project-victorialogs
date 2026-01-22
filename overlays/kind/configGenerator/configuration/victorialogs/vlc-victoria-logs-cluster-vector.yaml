@@ -25,13 +25,7 @@ sinks:
       codec: json
     framing:
       method: newline_delimited
-    request:
-      headers:
-        VL-Time-Field: timestamp
-        VL-Stream-Fields: stream,kubernetes.pod_name,kubernetes.container_name,kubernetes.pod_namespace
-        VL-Msg-Field: log,log.msg,log.message
-        AccountID: '0'
-        ProjectID: '0'
+
   llm_analyzer:
     compression: gzip
     uri: 'http://project-log-analyzer-service.application.svc.cluster.local:8081/analyze'
