@@ -18,7 +18,7 @@ sinks:
     uri: 'http://vlc-victoria-logs-cluster-vlinsert.vm.svc.cluster.local:9481/insert/jsonline'
     healthcheck:
       enabled: false
-    inputs: ['parser']
+    inputs: ['k8s']
     type: http
     method: post
     encoding:
