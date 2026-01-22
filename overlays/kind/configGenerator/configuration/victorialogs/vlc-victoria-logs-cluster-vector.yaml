@@ -18,14 +18,20 @@ sinks:
     uri: 'http://vlc-victoria-logs-cluster-vlinsert.vm.svc.cluster.local:9481/insert/jsonline'
     healthcheck:
       enabled: false
-    inputs: ['k8s']
+    inputs: ['parser_vlogs']
     type: http
     method: post
     encoding:
       codec: json
     framing:
       method: newline_delimited
-
+    request:
+      headers:
+        VL-Time-Field: timestamp
+        VL-Stream-Fields: stream,kubernetes.pod_name,kubernetes.container_name,kubernetes.pod_namespace
+        VL-Msg-Field: message,msg,_msg,log.msg,log.message,log
+        AccountID: '0'
+        ProjectID: '0'
   llm_analyzer:
     compression: gzip
     uri: 'http://project-log-analyzer-service.application.svc.cluster.local:8081/analyze'
@@ -53,6 +59,12 @@ sources:
       address: 0.0.0.0:4318
 
 transforms:
+  parser_vlogs:
+    type: remap
+    inputs: [k8s]
+    source: |
+      .log = parse_json(.message) ?? .message
+      del(.message)
   filter:
     type: filter
     inputs: [k8s]
