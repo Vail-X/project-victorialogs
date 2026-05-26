@@ -801,7 +801,7 @@ vlstorage:
 vmauth:
   # -- Enable deployment of vmauth component, to help better balance the read and write requests to vlinsert and vlselect components.
   # With vmauth enabled, please also set `service.clusterIP: None` and `service.type: ClusterIP` for `vlinsert` and `vlselect`.
-  enabled: true
+  enabled: false
   # -- Override default `app` label name
   name: ''
   # -- VMAuth configuration secret name
